@@ -1,4 +1,3 @@
-const res = require("express/lib/response");
 const Goal = require("../models/goalModel");
 
 const runAsyncWrapper = (callback) => {
