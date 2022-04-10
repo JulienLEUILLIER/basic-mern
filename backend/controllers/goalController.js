@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const Goal = require("../models/goalModel");
 
 const runAsyncWrapper = (callback) => {
@@ -25,13 +26,19 @@ const setGoal = runAsyncWrapper(async (req, res, next) => {
   res.status(200).json(goal);
 });
 
-const updateGoal = runAsyncWrapper(async (req, res) => {
-  const goal = await Goal.findById(req.params.id);
+const fetchGoalById = async (id) => {
+  const goal = await Goal.findById(id);
 
   if (!goal) {
     res.status(400);
     throw new Error("No goal with this id found");
   }
+
+  return goal;
+};
+
+const updateGoal = runAsyncWrapper(async (req, res) => {
+  const goal = await fetchGoalById(req.params.id);
 
   const updatedGoal = await Goal.findByIdAndUpdate(goal.id, req.body, {
     new: true,
@@ -41,12 +48,7 @@ const updateGoal = runAsyncWrapper(async (req, res) => {
 });
 
 const deleteGoal = runAsyncWrapper(async (req, res) => {
-  const goal = await Goal.findById(req.params.id);
-
-  if (!goal) {
-    res.status(400);
-    throw new Error("No goal with this id found");
-  }
+  const goal = await fetchGoalById(req.params.id);
 
   const deletedGoal = await Goal.findByIdAndDelete(goal.id);
 
