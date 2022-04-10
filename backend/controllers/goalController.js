@@ -1,25 +1,57 @@
-const getGoals = (req, res) => {
-  res.status(200).send({ message: "Get goals" });
+const Goal = require("../models/goalModel");
+
+const runAsyncWrapper = (callback) => {
+  return function (req, res, next) {
+    callback(req, res, next).catch(next);
+  };
 };
 
-const setGoal = (req, res, next) => {
-  try {
-    if (!req.body.text) {
-      throw new Error("Please input a text field");
-    }
-    res.send({ message: "Set goal" });
-  } catch (err) {
-    return next(err);
+const getGoals = runAsyncWrapper(async (req, res) => {
+  const goals = await Goal.find();
+
+  res.status(200).send(goals);
+});
+
+const setGoal = runAsyncWrapper(async (req, res, next) => {
+  if (!req.body.text) {
+    res.status(400);
+    throw new Error("Please input a text field");
   }
-};
 
-const updateGoal = (req, res) => {
-  res.status(200).send({ message: "Update goal" });
-};
+  const goal = await Goal.create({
+    text: req.body.text,
+  });
 
-const deleteGoal = (req, res) => {
-  res.status(200).send({ message: "Delete goal" });
-};
+  res.status(200).json(goal);
+});
+
+const updateGoal = runAsyncWrapper(async (req, res) => {
+  const goal = await Goal.findById(req.params.id);
+
+  if (!goal) {
+    res.status(400);
+    throw new Error("No goal with this id found");
+  }
+
+  const updatedGoal = await Goal.findByIdAndUpdate(goal.id, req.body, {
+    new: true,
+  });
+
+  res.status(200).send(updatedGoal);
+});
+
+const deleteGoal = runAsyncWrapper(async (req, res) => {
+  const goal = await Goal.findById(req.params.id);
+
+  if (!goal) {
+    res.status(400);
+    throw new Error("No goal with this id found");
+  }
+
+  const deletedGoal = await Goal.findByIdAndDelete(goal.id);
+
+  res.status(200).send(deletedGoal);
+});
 
 module.exports = {
   getGoals,
