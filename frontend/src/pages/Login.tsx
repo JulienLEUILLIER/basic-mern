@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { FaSignInAlt } from "react-icons/fa"
+import { login } from "../hooks/useAuth";
 
-interface LoginData {
+export interface LoginData {
   email: string,
   password: string,
 }
 
 const Login = () => {
-
   const initialState: LoginData = {
     email: '',
     password: '',
@@ -17,7 +17,8 @@ const Login = () => {
 
   const { email, password } = formData;
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {   
+
     setFormData(prev => ({
       ...prev,
       [event.target.name]: event.target.value,
@@ -25,7 +26,12 @@ const Login = () => {
   }
 
   const handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
+
+    event.preventDefault();    
+
+    const responseAfterLogin = login(formData)
+      .then(user => console.log(user))
+      .catch(err => console.log(err));    
   }
 
   return (
