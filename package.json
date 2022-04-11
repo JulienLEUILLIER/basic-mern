@@ -4,7 +4,9 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "server": "nodemon --watch backend ./backend/server.js"
+    "start": "node backend/server.js",
+    "server": "nodemon --watch backend ./backend/server.js",
+    "client": "yarn dev --cwd frontend"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",

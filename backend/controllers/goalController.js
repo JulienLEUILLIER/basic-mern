@@ -38,7 +38,6 @@ const updateGoal = runAsyncWrapper(async (req, res) => {
 });
 
 const deleteGoal = runAsyncWrapper(async (req, res) => {
-
   const goal = await getGoalVerifyingRelationWithUser(req, res);
 
   const deletedGoal = await Goal.findByIdAndDelete(goal.id);
