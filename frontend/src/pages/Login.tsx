@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { FaSignInAlt } from "react-icons/fa"
-import { login } from "../hooks/useAuth";
+import { login } from "../api/sessions";
 
 export interface LoginData {
   email: string,

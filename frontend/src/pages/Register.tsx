@@ -1,46 +1,66 @@
 import React, { useState } from "react"
 import { FaUser } from "react-icons/fa"
-import { register } from "../hooks/useAuth"
-export interface RegisterData {
+import { register } from '../api/users'
+
+export interface User {
   name: string,
   email: string,
   password: string,
-  password2: string,
+}
+
+interface RegisterData {
+  user: User,
+  passwordConfirmation: string,
 }
 
 const Register = () => {
 
   const initialState: RegisterData = {
-    name: '',
-    email: '',
-    password: '',
-    password2: ''
+    user: {
+      name: '',
+      email: '',
+      password: ''
+    },
+    passwordConfirmation: ''
   }
 
   const [formData, setFormData] = useState<RegisterData>(initialState);
-  const [isActive, setIsActive] = useState(false);
+  const [errorIsActive, setErrorIsActive] = useState(false);
 
-  const { name, email, password, password2 } = formData;
+  const { user, passwordConfirmation } = formData;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
-      ...prev,
-      [event.target.name]: event.target.value,
-    }))
+
+    const eventName = event.target.name;
+
+    if (eventName == 'name' || eventName == 'email' || eventName == 'password') {
+      setFormData(prev => ({
+        user: {
+          ...prev.user,
+          [eventName]: event.target.value
+        },
+        passwordConfirmation: prev.passwordConfirmation
+      }));
+    } else {
+      setFormData(prev => ({
+        user: prev.user,
+        passwordConfirmation: event.target.value
+      }));
+    }
   }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (formData.password === formData.password2) {
-      const responseAfterRegister = register(formData)
+    if (user.password === passwordConfirmation) {
+      const responseAfterRegister = register(user)
         .then(data => console.log(data))
         .catch(err => console.log(err));
     } else {
-      if (!isActive) {
-        setIsActive(prev => !prev);
-  
-        setTimeout(() => setIsActive(prev => !prev), 3000);
+      if (!errorIsActive) {
+        setErrorIsActive(prev => !prev);
+
+        setTimeout(() => setErrorIsActive(prev => !prev), 3000);
       }
     }
   }
@@ -62,7 +82,7 @@ const Register = () => {
               className="form-control"
               id="name"
               name="name"
-              value={name}
+              value={user.name}
               placeholder="Enter your name"
               onChange={handleChange} />
           </div>
@@ -72,7 +92,7 @@ const Register = () => {
               className="form-control"
               id="email"
               name="email"
-              value={email}
+              value={user.email}
               placeholder="Enter your email"
               onChange={handleChange} />
           </div>
@@ -82,7 +102,7 @@ const Register = () => {
               className="form-control"
               id="password"
               name="password"
-              value={password}
+              value={user.password}
               placeholder="Enter your password"
               onChange={handleChange} />
           </div>
@@ -92,7 +112,7 @@ const Register = () => {
               className="form-control"
               id="password2"
               name="password2"
-              value={password2}
+              value={passwordConfirmation}
               placeholder="Confirm your password"
               onChange={handleChange} />
           </div>
@@ -100,8 +120,8 @@ const Register = () => {
             <button type="submit" className="btn btn-block text-block">Submit</button>
           </div>
         </form>
-        {isActive && <div className="error-message text-block">
-            Passwords do not match
+        {errorIsActive && <div className="error-message text-block">
+          Passwords do not match
         </div>}
       </section>
     </>
