@@ -66,7 +66,7 @@ const Login = () => {
               onChange={handleChange} />
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-block">Submit</button>
+            <button type="submit" className="btn btn-block text-block">Submit</button>
           </div>
         </form>
       </section>

@@ -1,7 +1,7 @@
-import React, { ChangeEvent, useState } from "react"
+import React, { useState } from "react"
 import { FaUser } from "react-icons/fa"
-
-interface FormData {
+import { register } from "../hooks/useAuth"
+export interface RegisterData {
   name: string,
   email: string,
   password: string,
@@ -10,14 +10,15 @@ interface FormData {
 
 const Register = () => {
 
-  const initialState: FormData = {
+  const initialState: RegisterData = {
     name: '',
     email: '',
     password: '',
     password2: ''
   }
 
-  const [formData, setFormData] = useState<FormData>(initialState);
+  const [formData, setFormData] = useState<RegisterData>(initialState);
+  const [isActive, setIsActive] = useState(false);
 
   const { name, email, password, password2 } = formData;
 
@@ -30,6 +31,18 @@ const Register = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+
+    if (formData.password === formData.password2) {
+      const responseAfterRegister = register(formData)
+        .then(data => console.log(data))
+        .catch(err => console.log(err));
+    } else {
+      if (!isActive) {
+        setIsActive(prev => !prev);
+  
+        setTimeout(() => setIsActive(prev => !prev), 3000);
+      }
+    }
   }
 
   return (
@@ -84,9 +97,12 @@ const Register = () => {
               onChange={handleChange} />
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-block">Submit</button>
+            <button type="submit" className="btn btn-block text-block">Submit</button>
           </div>
         </form>
+        {isActive && <div className="error-message text-block">
+            Passwords do not match
+        </div>}
       </section>
     </>
   )
