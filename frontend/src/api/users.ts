@@ -1,18 +1,20 @@
-import { User } from "../pages/Register";
+import { RegisterData, User } from "../hooks/useAuth";
 
-export const getCurrentUser = async (params: {
-  _id: string;
-  name: string;
-  email: string;
-}): Promise<User> => {
+export const getCurrentUser = async (token: string | null): Promise<User> => {
+
+  if (!token) {
+    throw new Error('No token sent to get current user');
+  }
+
+  const bearer = "Bearer " + token;
+
   const response = await fetch("/api/users/me", {
-    method: "POST",
+    method: "GET",
 
     headers: {
       "Content-type": "application/json; charset=UTF-8",
+      "Authorization": bearer,
     },
-
-    body: JSON.stringify(params),
   });
 
   if (response.ok) {
@@ -24,7 +26,7 @@ export const getCurrentUser = async (params: {
   }
 };
 
-export const register = async (params: User): Promise<{ _id: string; name: string; email: string; token: string }> => {
+export const register = async (params: RegisterData): Promise<{user: User, token: string}> => {
   const response = await fetch("http://localhost:8000/api/users/", {
     method: "POST",
 

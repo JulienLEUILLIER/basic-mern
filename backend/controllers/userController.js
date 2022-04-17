@@ -30,9 +30,6 @@ const registerUser = async (req, res, next) => {
 
     if (user) {
       res.status(201).json({
-        _id: user.id,
-        name: user.name,
-        email: user.email,
         token: generateToken(user._id),
       });
     } else {
@@ -62,12 +59,13 @@ const loginUser = async (req, res) => {
 };
 
 const getMe = async (req, res) => {
-  const { _id, name, email } = await User.findById(req.user._id);
+  
+  const {id, name, email} = await User.findById(req.user.id);
 
   res.status(200).json({
-    _id,
-    name,
-    email,
+    id: id,
+    name: name,
+    email: email
   });
 };
 

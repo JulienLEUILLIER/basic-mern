@@ -1,8 +1,8 @@
-import { LoginData } from "../pages/Login";
+import { User, LoginData, RegisterData } from "../hooks/useAuth";
 
 export const login = async (
   params: LoginData
-): Promise<{ _id: string; name: string; email: string }> => {
+): Promise<User> => {
   const response = await fetch(`http://localhost:8000/api/users/login`, {
     method: "POST",
 

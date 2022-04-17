@@ -2,58 +2,43 @@ import React, { useState } from "react"
 import { FaUser } from "react-icons/fa"
 import { register } from '../api/users'
 
-export interface User {
+interface RegisterDataWithConfirmation {
   name: string,
   email: string,
   password: string,
-}
-
-interface RegisterData {
-  user: User,
   passwordConfirmation: string,
 }
 
 const Register = () => {
 
-  const initialState: RegisterData = {
-    user: {
-      name: '',
-      email: '',
-      password: ''
-    },
+  const [formData, setFormData] = useState<RegisterDataWithConfirmation>({
+    name: '',
+    email: '',
+    password: '',
     passwordConfirmation: ''
-  }
-
-  const [formData, setFormData] = useState<RegisterData>(initialState);
+  });
   const [errorIsActive, setErrorIsActive] = useState(false);
 
-  const { user, passwordConfirmation } = formData;
+  const { name, email, password, passwordConfirmation } = formData;
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
-    const eventName = event.target.name;
+    const { name, value } = event.target;
 
-    if (eventName == 'name' || eventName == 'email' || eventName == 'password') {
-      setFormData(prev => ({
-        user: {
-          ...prev.user,
-          [eventName]: event.target.value
-        },
-        passwordConfirmation: prev.passwordConfirmation
-      }));
-    } else {
-      setFormData(prev => ({
-        user: prev.user,
-        passwordConfirmation: event.target.value
-      }));
-    }
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
   }
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (user.password === passwordConfirmation) {
-      const responseAfterRegister = register(user)
+    if (password === passwordConfirmation) {
+
+      const { passwordConfirmation, ...userData } = formData;
+
+      const responseAfterRegister = register(userData)
         .then(data => console.log(data))
         .catch(err => console.log(err));
     } else {
@@ -82,7 +67,7 @@ const Register = () => {
               className="form-control"
               id="name"
               name="name"
-              value={user.name}
+              value={name}
               placeholder="Enter your name"
               onChange={handleChange} />
           </div>
@@ -92,7 +77,7 @@ const Register = () => {
               className="form-control"
               id="email"
               name="email"
-              value={user.email}
+              value={email}
               placeholder="Enter your email"
               onChange={handleChange} />
           </div>
@@ -102,7 +87,7 @@ const Register = () => {
               className="form-control"
               id="password"
               name="password"
-              value={user.password}
+              value={password}
               placeholder="Enter your password"
               onChange={handleChange} />
           </div>

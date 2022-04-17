@@ -1,19 +1,13 @@
 import { useState } from "react";
 import { FaSignInAlt } from "react-icons/fa"
 import { login } from "../api/sessions";
+import { LoginData } from "../hooks/useAuth";
 
-export interface LoginData {
-  email: string,
-  password: string,
-}
+
 
 const Login = () => {
-  const initialState: LoginData = {
-    email: '',
-    password: '',
-  }
 
-  const [formData, setFormData] = useState<LoginData>(initialState);
+  const [formData, setFormData] = useState<LoginData>({} as LoginData);
 
   const { email, password } = formData;
 
