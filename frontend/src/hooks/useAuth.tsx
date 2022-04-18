@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState, useEffect, useMemo } from "react";
+import { createContext, ReactNode, useState, useEffect, useMemo, useContext } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import * as usersApi from "../api/users";
 import * as sessionsApi from "../api/sessions";
@@ -52,7 +52,7 @@ export const AuthProvider = ({
       .then((user) => setUser(user))
       .catch((_) => console.log("No current active session"))
       .finally(() => setLoadingInitial(false));
-  });
+  }, []);
 
   const login = (params: LoginData) => {
     setLoading(true);
@@ -98,4 +98,8 @@ export const AuthProvider = ({
   )
 };
 
-export default AuthContextType;
+const useAuth = () => {
+  return useContext(AuthContext);
+}
+
+export default useAuth;

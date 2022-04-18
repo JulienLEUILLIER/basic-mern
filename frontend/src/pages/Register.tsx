@@ -1,6 +1,6 @@
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react"
 import { FaUser } from "react-icons/fa"
-import { register } from '../api/users'
+import useAuth from '../hooks/useAuth';
 
 interface RegisterDataWithConfirmation {
   name: string,
@@ -11,13 +11,15 @@ interface RegisterDataWithConfirmation {
 
 const Register = () => {
 
+  const { register, loading, error } = useAuth();
+
   const [formData, setFormData] = useState<RegisterDataWithConfirmation>({
     name: '',
     email: '',
     password: '',
     passwordConfirmation: ''
   });
-  const [errorIsActive, setErrorIsActive] = useState(false);
+  const [submitError, setSubmitError] = useState(false);
 
   const { name, email, password, passwordConfirmation } = formData;
 
@@ -38,17 +40,16 @@ const Register = () => {
 
       const { passwordConfirmation, ...userData } = formData;
 
-      const responseAfterRegister = register(userData)
-        .then(data => console.log(data))
-        .catch(err => console.log(err));
-    } else {
-      if (!errorIsActive) {
-        setErrorIsActive(prev => !prev);
-
-        setTimeout(() => setErrorIsActive(prev => !prev), 3000);
-      }
+      register(userData);
     }
   }
+
+  useEffect(() => {
+    if (error) {
+      setSubmitError(true);
+      setTimeout(() => {setSubmitError(false)}, 3000);
+    }
+  }, [error]);
 
   return (
     <>
@@ -102,10 +103,10 @@ const Register = () => {
               onChange={handleChange} />
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-block text-block">Submit</button>
+            <button type="submit" disabled={loading} className="btn btn-block text-block">Submit</button>
           </div>
         </form>
-        {errorIsActive && <div className="error-message text-block">
+        {submitError && <div className="error-message text-block">
           Passwords do not match
         </div>}
       </section>

@@ -1,9 +1,8 @@
 import { RegisterData, User } from "../hooks/useAuth";
 
 export const getCurrentUser = async (token: string | null): Promise<User> => {
-
   if (!token) {
-    throw new Error('No token sent to get current user');
+    throw new Error("No token sent to get current user");
   }
 
   const bearer = "Bearer " + token;
@@ -13,7 +12,7 @@ export const getCurrentUser = async (token: string | null): Promise<User> => {
 
     headers: {
       "Content-type": "application/json; charset=UTF-8",
-      "Authorization": bearer,
+      Authorization: bearer,
     },
   });
 
@@ -26,7 +25,9 @@ export const getCurrentUser = async (token: string | null): Promise<User> => {
   }
 };
 
-export const register = async (params: RegisterData): Promise<{user: User, token: string}> => {
+export const register = async (
+  params: RegisterData
+): Promise<{ user: User; token: string }> => {
   const response = await fetch("http://localhost:8000/api/users/", {
     method: "POST",
 
@@ -47,7 +48,7 @@ export const register = async (params: RegisterData): Promise<{user: User, token
     });
 
     return data;
-  } else {
+  } else {    
     throw new Error("Register attempt did not result in a server response");
   }
 };

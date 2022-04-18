@@ -3,13 +3,15 @@ import Dashboard from "./pages/Dashboard"
 import Login from "./pages/Login"
 import Register from "./pages/Register"
 import Header from "./components/Header"
+import { AuthProvider } from "./hooks/useAuth"
 
 function App() {
 
 
   return (
-    <>
-      <BrowserRouter>
+
+    <BrowserRouter>
+      <AuthProvider>
         <div className="container">
           <Header />
           <Routes>
@@ -18,8 +20,8 @@ function App() {
             <Route path='/register' element={<Register />} />
           </Routes>
         </div>
-      </BrowserRouter>
-    </>
+      </AuthProvider>
+    </BrowserRouter>
   )
 }
 
