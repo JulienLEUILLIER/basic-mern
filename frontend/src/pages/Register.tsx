@@ -8,6 +8,20 @@ interface RegisterDataWithConfirmation {
   password: string,
   passwordConfirmation: string,
 }
+  
+const checkFilledForms = (formData: RegisterDataWithConfirmation) => {
+  const keys = Object.keys(formData) as Array<keyof RegisterDataWithConfirmation>;
+
+  let allFilled: boolean = true;
+
+  keys.forEach(key => {
+    if (formData[key].length === 0) {
+      allFilled = false;
+    }
+  });
+
+  return allFilled;
+}
 
 const Register = () => {
 
@@ -22,6 +36,7 @@ const Register = () => {
   const [submitError, setSubmitError] = useState(false);
 
   const { name, email, password, passwordConfirmation } = formData;
+  const isEnabled = checkFilledForms(formData);
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 
@@ -50,6 +65,9 @@ const Register = () => {
       setTimeout(() => {setSubmitError(false)}, 3000);
     }
   }, [error]);
+
+  console.log(isEnabled);
+  
 
   return (
     <>
@@ -103,7 +121,7 @@ const Register = () => {
               onChange={handleChange} />
           </div>
           <div className="form-group">
-            <button type="submit" disabled={loading} className="btn btn-block text-block">Submit</button>
+            <button type="submit" disabled={loading || !isEnabled} className="btn btn-block text-block">Submit</button>
           </div>
         </form>
         {submitError && <div className="error-message text-block">
