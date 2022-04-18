@@ -96,8 +96,8 @@ const Register = () => {
             <input
               type="password"
               className="form-control"
-              id="password2"
-              name="password2"
+              id="passwordConfirmation"
+              name="passwordConfirmation"
               value={passwordConfirmation}
               placeholder="Confirm your password"
               onChange={handleChange} />
