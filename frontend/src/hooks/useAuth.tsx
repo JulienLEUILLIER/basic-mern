@@ -60,7 +60,8 @@ export const AuthProvider = ({
     const { email, password } = params;
 
     sessionsApi.login({ email, password })
-      .then(user => {
+      .then(receivedData => {
+        const { user } = receivedData;
         setUser(user);
         navigate("/dashboard");
       })
@@ -73,8 +74,10 @@ export const AuthProvider = ({
 
     usersApi.register(params)
       .then(userData => {
+        console.log(userData);
+
         setUser(userData.user);
-        navigate("/dashboard");
+        navigate("/");
       })
       .catch(error => setError(error))
       .finally(() => setLoading(false));

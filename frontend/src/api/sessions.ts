@@ -2,7 +2,7 @@ import { User, LoginData, RegisterData } from "../hooks/useAuth";
 
 export const login = async (
   params: LoginData
-): Promise<User> => {
+): Promise<{user: User, token: string}> => {
   const response = await fetch(`http://localhost:8000/api/users/login`, {
     method: "POST",
 

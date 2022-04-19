@@ -1,31 +1,17 @@
 import React, { useState, useEffect } from "react"
 import { FaUser } from "react-icons/fa"
 import useAuth from '../hooks/useAuth';
+import checkFilledForms from "../helpers/checkFilledForms";
 
-interface RegisterDataWithConfirmation {
-  name: string,
-  email: string,
-  password: string,
-  passwordConfirmation: string,
-}
-  
-const checkFilledForms = (formData: RegisterDataWithConfirmation) => {
-  const keys = Object.keys(formData) as Array<keyof RegisterDataWithConfirmation>;
-
-  let allFilled: boolean = true;
-
-  keys.forEach(key => {
-    if (formData[key].length === 0) {
-      allFilled = false;
-    }
-  });
-
-  return allFilled;
+export interface RegisterDataWithConfirmation {
+  name: string;
+  email: string;
+  password: string;
+  passwordConfirmation: string;
 }
 
 const Register = () => {
 
-  const { register, loading, error } = useAuth();
 
   const [formData, setFormData] = useState<RegisterDataWithConfirmation>({
     name: '',
@@ -33,8 +19,9 @@ const Register = () => {
     password: '',
     passwordConfirmation: ''
   });
-  const [submitError, setSubmitError] = useState(false);
+  const [errorSubmitting, setErrorSubmitting] = useState(false);
 
+  const { register, loading, error } = useAuth();
   const { name, email, password, passwordConfirmation } = formData;
   const isEnabled = checkFilledForms(formData);
 
@@ -56,18 +43,11 @@ const Register = () => {
       const { passwordConfirmation, ...userData } = formData;
 
       register(userData);
+    } else {
+      setErrorSubmitting(true);
+      setTimeout(() => { setErrorSubmitting(false) }, 3000);
     }
   }
-
-  useEffect(() => {
-    if (error) {
-      setSubmitError(true);
-      setTimeout(() => {setSubmitError(false)}, 3000);
-    }
-  }, [error]);
-
-  console.log(isEnabled);
-  
 
   return (
     <>
@@ -124,7 +104,7 @@ const Register = () => {
             <button type="submit" disabled={loading || !isEnabled} className="btn btn-block text-block">Submit</button>
           </div>
         </form>
-        {submitError && <div className="error-message text-block">
+        {errorSubmitting && <div className="error-message text-block">
           Passwords do not match
         </div>}
       </section>

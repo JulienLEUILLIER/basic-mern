@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { FaSignInAlt } from "react-icons/fa"
-import { login } from "../api/sessions";
-import { LoginData } from "../hooks/useAuth";
-
-
+import useAuth, { LoginData } from "../hooks/useAuth";
+import checkFilledForms from "../helpers/checkFilledForms";
 
 const Login = () => {
 
+  const { login, loading, error } = useAuth();
+
   const [formData, setFormData] = useState<LoginData>({} as LoginData);
+  const [errorSumbitting, setErrorSumbitting] = useState(false);
+  const isEnabled = checkFilledForms(formData);
 
   const { email, password } = formData;
 
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {   
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => { 
+    
+    const { name, value } = event.target;
 
     setFormData(prev => ({
       ...prev,
-      [event.target.name]: event.target.value,
+      [name]: value,
     }))
   }
 
@@ -23,9 +27,7 @@ const Login = () => {
 
     event.preventDefault();    
 
-    const responseAfterLogin = login(formData)
-      .then(user => console.log(user))
-      .catch(err => console.log(err));    
+    login(formData); 
   }
 
   return (
@@ -60,7 +62,7 @@ const Login = () => {
               onChange={handleChange} />
           </div>
           <div className="form-group">
-            <button type="submit" className="btn btn-block text-block">Submit</button>
+            <button type="submit" disabled={loading || !isEnabled} className="btn btn-block text-block">Submit</button>
           </div>
         </form>
       </section>

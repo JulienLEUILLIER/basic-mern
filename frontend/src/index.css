@@ -28,6 +28,11 @@ li {
   line-height: 2.2;
 }
 
+button:disabled {
+  opacity: 0.5;
+}
+
+
 h1,
 h2,
 h3 {
